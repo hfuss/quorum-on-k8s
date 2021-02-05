@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: config-generator
+  name: {{ include "quorum.fullname" . }}-config-generator
   labels:
     {{ include "quorum.labels" . | nindent 4 }}
   annotations:
@@ -17,11 +17,13 @@ spec:
       restartPolicy: Never
       containers:
         - name: config-generator
-          image: ghcr.io/hfuss/quorum-config-generator
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.configGenerator.image.repository }}:{{ .Values.configGenerator.image.tag }}
+          imagePullPolicy: {{ .Values.configGenerator.image.pullPolicy }}
           env:
             - name: NUM_NODES
-              value: "{{ .Values.replicaCount }}"
+              value: {{ .Values.replicaCount | quote }}
+            - name: HOST_PREFIX
+              value: {{ include "quorum.fullname" . | quote }}
           command:
             - sh
             - -c
@@ -34,8 +36,8 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: config
+            claimName:  {{ include "quorum.fullname" . }}-config
         - name: scripts
           configMap:
-            name: scripts
+            name:  {{ include "quorum.fullname" . }}-config-scripts
             defaultMode: 0555

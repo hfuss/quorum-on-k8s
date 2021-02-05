@@ -1,7 +1,7 @@
 {{/*apiVersion: apps/v1*/}}
 {{/*kind: StatefulSet*/}}
 {{/*metadata:*/}}
-{{/*  name: {{ include "quorum.fullname" . }}-nodes*/}}
+{{/*  name: {{ include "quorum.fullname" . }}*/}}
 {{/*  labels:*/}}
 {{/*    {{- include "quorum.labels" . | nindent 4 }}*/}}
 {{/*spec:*/}}
