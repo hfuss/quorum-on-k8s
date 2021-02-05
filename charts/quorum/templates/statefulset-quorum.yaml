@@ -1,13 +1,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "quorum.fullname" . }}
+  name: {{ include "quorum.fullname" . }}-nodes
   labels:
     {{- include "quorum.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "quorum.selectorLabels" . | nindent 6 }}
