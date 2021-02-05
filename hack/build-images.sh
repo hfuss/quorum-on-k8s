@@ -7,6 +7,7 @@ githubUsername="${2:-hfuss}"
 
 pushd ${kaleidoPath} > /dev/null
 
+    # clone if the repos don't exist
     [[ -d "quorum-tools" ]] || git clone git@github.com:kaleido-io/quorum-tools.git
     [[ -d "quorum" ]] || git clone git@github.com:kaleido-io/quorum.git
     [[ -d "constellation" ]] || git clone git@github.com:kaleido-io/constellation.git
@@ -14,6 +15,8 @@ pushd ${kaleidoPath} > /dev/null
 
     pushd quorum-tools > /dev/null
 
+        # make docker isn't idempotent if the images already exist, so this is a hack
+        # to speed things up if the images exist
         set +e
         for image in quorum quorum-builder constellation constellation-base; do
             docker inspect jpmorganchase/${image} > /dev/null
@@ -30,6 +33,7 @@ pushd ${kaleidoPath} > /dev/null
         fi
         set -e
 
+        # push images to ghcr
         for image in quorum quorum-builder constellation constellation-base; do
             docker tag jpmorganchase/${image} ghcr.io/${githubUsername}/${image}
             docker push ghcr.io/${githubUsername}/${image}
@@ -41,5 +45,6 @@ pushd ${kaleidoPath} > /dev/null
 
 popd > /dev/null
 
+# config-generator just has the tools necessary to generate all the quorum and constellation keys
 docker build quorum-config-generator/ -t ghcr.io/${githubUsername}/quorum-config-generator
 docker push ghcr.io/${githubUsername}/quorum-config-generator

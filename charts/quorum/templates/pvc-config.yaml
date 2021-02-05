@@ -1,7 +1,16 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-    name: config
-
-
+  name: config
+  labels:
+    {{- include "quorum.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: keep
 spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

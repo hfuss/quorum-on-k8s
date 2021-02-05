@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: config-generator
+  labels:
+    {{ include "quorum.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: keep
+spec:
+  template:
+    metadata:
+      labels:
+        {{ include "quorum.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: config-generator
+          image: ghcr.io/hfuss/quorum-config-generator
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NUM_NODES
+              value: "{{ .Values.replicaCount }}"
+          command:
+            - sh
+            - -c
+            - '/scripts/generate-config.sh'
+          volumeMounts:
+            - mountPath: /qdata_all
+              name: config
+            - mountPath: /scripts
+              name: scripts
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config
+        - name: scripts
+          configMap:
+            name: scripts
+            defaultMode: 0555
