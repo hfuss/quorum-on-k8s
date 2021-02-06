@@ -4,6 +4,7 @@ metadata:
   name: {{ include "quorum.fullname" . }}-config-generator
   labels:
     {{ include "quorum.labels" . | nindent 4 }}
+    app.kubernetes.io/component: config-generator
   annotations:
     helm.sh/hook: pre-install
     helm.sh/hook-weight: "-5"

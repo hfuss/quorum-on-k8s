@@ -45,6 +45,8 @@
 {{/*              port: http*/}}
 {{/*          resources:*/}}
 {{/*            {{- toYaml .Values.resources | nindent 12 }}*/}}
+{{/*        - name: constellation*/}}
+
 {{/*      {{- with .Values.nodeSelector }}*/}}
 {{/*      nodeSelector:*/}}
 {{/*        {{- toYaml . | nindent 8 }}*/}}

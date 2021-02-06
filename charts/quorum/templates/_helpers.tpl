@@ -54,9 +54,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "quorum.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "quorum.fullname" .) .Values.serviceAccount.name }}
+{{- if .Values.quorum.serviceAccount.create }}
+{{- default (include "quorum.fullname" .) .Values.quorum.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- default "default" .Values.quorum.serviceAccount.name }}
 {{- end }}
 {{- end }}
