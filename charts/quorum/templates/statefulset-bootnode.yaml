@@ -9,8 +9,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "quorum.selectorLabels" . | nindent 8 }}
+      {{- include "quorum.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: bootnode
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate: {}
+  serviceName: {{ include "quorum.fullname" . }}-bootnode
   template:
     metadata:
       {{- with .Values.bootnode.podAnnotations }}
@@ -25,38 +29,63 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "quorum.serviceAccountName" . }}
+      serviceAccountName: {{ include "quorum.serviceAccountName" . }}-bootnode
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.bootnode.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: bootnode
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            {{- toYaml .Values.bootnode.securityContext | nindent 12 }}
+          image: "{{ .Values.bootnode.image.repository }}:{{ .Values.bootnode.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.bootnode.image.pullPolicy }}
+          command:
+            - /scripts/start-bootnode.sh
+{{/*          livenessProbe:*/}}
+{{/*            tcpSocket:*/}}
+{{/*              port: 30301*/}}
+{{/*          # TODO potentially we could have something smarter?*/}}
+{{/*          readinessProbe:*/}}:w
+{{/*            e:*/}}
+{{/*              port: 30301*/}}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.bootnode.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /qdata_all/
+              name: config
+            - mountPath: /qdata
+              name: qdata
+            - mountPath: /scripts
+              name: scripts
+          ports:
+            - name: udp
+              containerPort: 30301
+              protocol: UDP
+      {{- with .Values.bootnode.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.bootnode.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.bootnode.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: {{ include "quorum.fullname" . }}-config
+        - name: scripts
+          configMap:
+            name: {{ include "quorum.fullname" . }}-runtime-scripts
+            defaultMode: 0555
+  volumeClaimTemplates:
+    - metadata:
+        name: qdata
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 128Mi

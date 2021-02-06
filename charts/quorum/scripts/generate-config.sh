@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Copied and adapted from https://github.com/kaleido-io/quorum-tools/blob/master/examples/setup.sh
+
 qd_all=/qdata_all
 qd_boot=${qd_all}/qdata_boot
 
