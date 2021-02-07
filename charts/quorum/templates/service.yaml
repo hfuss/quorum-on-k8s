@@ -8,10 +8,14 @@ metadata:
 spec:
   type: {{ .Values.quorum.service.type }}
   ports:
-    - port: {{ .Values.quorum.service.port }}
-      targetPort: http
+    - port: {{ .Values.quorum.service.gethPort }}
+      targetPort: geth
       protocol: TCP
-      name: http
+      name: geth
+    - port: {{ .Values.quorum.service.otherPort }}
+      targetPort: other
+      protocol: TCP
+      name: other
   selector:
     {{- include "quorum.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: quorum

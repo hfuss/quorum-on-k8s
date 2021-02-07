@@ -1,8 +1,8 @@
-.PHONY: clean setup deploy test
+.PHONY: clean setup deploy test k8s
 
 clean:
 	helm delete -n kaleido quorum || true
-	kubectl delete -n kaleido pvc,configmap,job -l 'app.kubernetes.io/name=quorum'
+	kubectl delete --ignore-not-found -n kaleido pvc,configmap,job -l 'app.kubernetes.io/name=quorum'
 
 setup:
 	kubectl create ns kaleido || true
@@ -12,3 +12,6 @@ deploy: setup
 
 test:
 	./hack/pvc-viewer.sh quorum-config kaleido
+
+k8s:
+	./hack/start-minikube.sh

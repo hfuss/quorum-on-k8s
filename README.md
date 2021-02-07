@@ -15,12 +15,7 @@ First get a Kuberentes cluster provisioned, `minikube` is always an easy option:
 
 ```bash
 # assumes bash on linux or macos
-vm=$([[ "${OSTYPE}" == "darwin"* ]] && echo 'true')
-minikube start --vm=${vm}  
-minikube addons enable ingress
-
-# make sure everything is sound... 
-kubectl get pods -n kube-system -w
+make k8s
 ```
 
 Then make sure you have the quorum-tools' container images built and ideally pushed:

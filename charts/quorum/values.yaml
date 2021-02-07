@@ -1,4 +1,4 @@
-replicaCount: 4
+replicaCount: 3
 
 configGenerator:
   podAnnotations: { }
@@ -30,6 +30,7 @@ configGenerator:
     #   memory: 128Mi
 
 bootnode:
+  storage: 128Mi
   podAnnotations: { }
 
   podSecurityContext: { }
@@ -41,17 +42,17 @@ bootnode:
 
   affinity: { }
 
-  resources: {}
+  resources:
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+     limits:
+       cpu: 100m
+       memory: 128Mi
+     requests:
+       cpu: 10m
+       memory: 128Mi
 
   image:
     repository: ghcr.io/hfuss/quorum
@@ -75,6 +76,7 @@ bootnode:
 
 
 quorum:
+  storage: 256Mi
   image:
     repository: ghcr.io/hfuss/quorum
     pullPolicy: Always
@@ -96,7 +98,13 @@ quorum:
       repository: ghcr.io/hfuss/constellation
       pullPolicy: Always
       tag: latest
-    resources: { }
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 512Mi
       # We usually recommend not to specify default resources and to leave this as a conscious
       # choice for the user. This also increases chances charts run on environments with little
       # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -130,9 +138,16 @@ quorum:
 
   service:
     type: ClusterIP
-    port: 80
+    gethPort: 8545
+    otherPort: 8546
 
-  resources: {}
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 10m
+      memory: 512Mi
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following

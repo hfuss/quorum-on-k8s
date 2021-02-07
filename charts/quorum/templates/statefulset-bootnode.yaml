@@ -44,7 +44,7 @@ spec:
 {{/*            tcpSocket:*/}}
 {{/*              port: 30301*/}}
 {{/*          # TODO potentially we could have something smarter?*/}}
-{{/*          readinessProbe:*/}}:w
+{{/*          readinessProbe:*/}}
 {{/*            e:*/}}
 {{/*              port: 30301*/}}
           resources:
@@ -88,4 +88,4 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 128Mi
+            storage: {{ .Values.bootnode.storage | quote }}

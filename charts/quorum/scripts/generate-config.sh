@@ -104,7 +104,7 @@ done
 cat <<EOF > tm.conf.template
 url = "http://_NODEIP_:9000/"
 port = 9000
-socket = "/qdata/constellation/tm.ipc"
+socket = "/constellation/tm.ipc"
 othernodes = [_NODELIST_]
 publickeys = ["/qdata/constellation/tm.pub"]
 privatekeys = ["/qdata/constellation/tm.key"]
@@ -134,3 +134,5 @@ do
 
 done
 rm -rf genesis.json static-nodes.json alloc.json tm.conf.template
+
+echo -n "$bootnode_enode" > /qdata_all/bootnode_enode
