@@ -9,7 +9,8 @@ pushd ${kaleidoPath} > /dev/null
 
     # clone if the repos don't exist
     [[ -d "quorum-tools" ]] || git clone git@github.com:kaleido-io/quorum-tools.git
-    [[ -d "quorum" ]] || git clone git@github.com:kaleido-io/quorum.git
+    # have to use my fork for enode to have DNS support
+    [[ -d "quorum" ]] || git clone git@github.com:hfuss/quorum.git
     [[ -d "constellation" ]] || git clone git@github.com:kaleido-io/constellation.git
     [[ -d "istanbul-tools" ]] || git clone git@github.com:getamis/istanbul-tools.git
 
@@ -17,6 +18,7 @@ pushd ${kaleidoPath} > /dev/null
 
         # make docker isn't idempotent if the images already exist, so this is a hack
         # to speed things up if the images exist
+        # to force images to build use `docker rmi`
         set +e
         for image in quorum quorum-builder constellation constellation-base; do
             docker inspect jpmorganchase/${image} > /dev/null

@@ -14,7 +14,7 @@ configGenerator:
 
   image:
     repository: ghcr.io/hfuss/quorum-config-generator
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     tag: latest
 
   resources: {}
@@ -56,7 +56,7 @@ bootnode:
 
   image:
     repository: ghcr.io/hfuss/quorum
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     tag: latest
   securityContext: { }
     # capabilities:
@@ -79,7 +79,7 @@ quorum:
   storage: 256Mi
   image:
     repository: ghcr.io/hfuss/quorum
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     tag: latest
 
   podAnnotations: {}
@@ -96,7 +96,7 @@ quorum:
   constellation:
     image:
       repository: ghcr.io/hfuss/constellation
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
       tag: latest
     resources:
       limits:
@@ -159,8 +159,10 @@ quorum:
     #   cpu: 100m
     #   memory: 128Mi
 
+# helps to avoid ghcr throttling
+imagePullSecrets:
+  - name: github-creds
 
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 

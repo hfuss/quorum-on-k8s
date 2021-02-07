@@ -4,13 +4,10 @@ clean:
 	helm delete -n kaleido quorum || true
 	kubectl delete --ignore-not-found -n kaleido pvc,configmap,job -l 'app.kubernetes.io/name=quorum'
 
-setup:
-	kubectl create ns kaleido || true
-
 build:
 	./hack/build-images.sh
 
-deploy: setup
+deploy:
 	./hack/deploy.sh
 
 test:
@@ -18,3 +15,4 @@ test:
 
 k8s:
 	./hack/start-minikube.sh
+	kubectl create ns kaleido || true

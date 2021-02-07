@@ -46,7 +46,7 @@ spec:
       containers:
         - name: constellation
           securityContext:
-          {{- toYaml .Values.quorum.constellation.securityContext | nindent 12 }}
+            {{- toYaml .Values.quorum.constellation.securityContext | nindent 12 }}
           image: "{{ .Values.quorum.constellation.image.repository }}:{{ .Values.quorum.constellation.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.quorum.constellation.image.pullPolicy }}
           command:

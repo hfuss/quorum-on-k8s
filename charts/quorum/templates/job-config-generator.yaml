@@ -15,7 +15,13 @@ spec:
       labels:
         {{ include "quorum.selectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Never
+      securityContext:
+        {{- toYaml .Values.configGenerator.podSecurityContext | nindent 8 }}
       containers:
         - name: config-generator
           image: {{ .Values.configGenerator.image.repository }}:{{ .Values.configGenerator.image.tag }}
@@ -38,6 +44,20 @@ spec:
               name: config
             - mountPath: /scripts
               name: scripts
+          resources:
+            {{- toYaml .Values.configGenerator.resources | nindent 12 }}
+      {{- with .Values.configGenerator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.configGenerator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.configGenerator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: config
           persistentVolumeClaim:

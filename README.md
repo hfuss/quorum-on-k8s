@@ -18,12 +18,20 @@ First get a Kuberentes cluster provisioned, `minikube` is always an easy option:
 make k8s
 ```
 
-Then make sure you have the quorum-tools' container images built and ideally pushed:
+> **Note**: It's recommended to login to GHCR for Docker and Kubernetes to avoid throttling:
+
+```bash
+./hack/configure-ghcr.sh ${gh_personal_token} ${gh_username}
+```
+
+Then if you'd like to build and host your own images on GitHub Container Registry (GHCR):
 
 ```bash
 # assumes you have git installed and have docker login'ed to ghcr.io
-./hack/build-images.sh
+make build
 ```
+
+However, images are already available for [`ghcr.io/hfuss`](https://github.com/users/hfuss/packages?repo_name=quorum-on-k8s).
 
 ### Development
 

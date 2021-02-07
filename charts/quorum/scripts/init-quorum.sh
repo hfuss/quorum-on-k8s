@@ -29,4 +29,5 @@ touch /qdata/logs/dummy.txt
 
 ls /qdata/constellation
 ls /qdata/ethereum
+# TODO is logs still needed?
 ls /qdata/logs
