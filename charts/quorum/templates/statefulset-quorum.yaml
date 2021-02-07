@@ -129,8 +129,8 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        {{- if .Values.localPathStorageEnabled }}
-        storageClassName: local-path
+        {{- if .Values.longhornStorageEnabled }}
+        storageClassName: longhorn
         {{- end }}
         resources:
           requests:
