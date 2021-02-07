@@ -34,10 +34,13 @@ pushd ${kaleidoPath} > /dev/null
         set -e
 
         # push images to ghcr
-        for image in quorum quorum-builder constellation constellation-base; do
+        for image in quorum-builder constellation constellation-base; do
             docker tag jpmorganchase/${image} ghcr.io/${githubUsername}/${image}
             docker push ghcr.io/${githubUsername}/${image}
         done
+
+        docker tag jpmorganchase/quorum ghcr.io/${githubUsername}/quorum-base
+        docker push ghcr.io/${githubUsername}/quorum-base
 
         docker tag istanbul-tools ghcr.io/${githubUsername}/istanbul-tools
         docker push ghcr.io/${githubUsername}/istanbul-tools
@@ -45,6 +48,9 @@ pushd ${kaleidoPath} > /dev/null
 
 popd > /dev/null
 
+# quorum is just the  jqpmorganchase/quorum + dumb-init
 # config-generator just has the tools necessary to generate all the quorum and constellation keys
-docker build quorum-config-generator/ -t ghcr.io/${githubUsername}/quorum-config-generator
-docker push ghcr.io/${githubUsername}/quorum-config-generator
+for image in quorum quorum-config-generator; do
+  docker build ${image}/ -t ghcr.io/${githubUsername}/${image}
+  docker push ghcr.io/${githubUsername}/${image}
+done

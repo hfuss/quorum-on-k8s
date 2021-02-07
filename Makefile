@@ -1,4 +1,4 @@
-.PHONY: clean setup deploy test k8s
+.PHONY: clean setup deploy test k8s build
 
 clean:
 	helm delete -n kaleido quorum || true
@@ -6,6 +6,9 @@ clean:
 
 setup:
 	kubectl create ns kaleido || true
+
+build:
+	./hack/build-images.sh
 
 deploy: setup
 	./hack/deploy.sh

@@ -98,13 +98,13 @@ for i in $(seq 1 $NUM_NODES)
 do
     k=$((i-1))
     sep=`[[ $i < $NUM_NODES ]] && echo ","`
-    nodelist=${nodelist}${sep}'"http://'${HOST_PREFIX}-${k}':9000/"'
+    nodelist=${nodelist}'"http://'${HOST_PREFIX}-${k}':9000/"'${sep}
 done
 
 cat <<EOF > tm.conf.template
 url = "http://_NODEIP_:9000/"
 port = 9000
-socket = "/constellation/tm.ipc"
+socket = "/qdata/constellation/tm.ipc"
 othernodes = [_NODELIST_]
 publickeys = ["/qdata/constellation/tm.pub"]
 privatekeys = ["/qdata/constellation/tm.key"]

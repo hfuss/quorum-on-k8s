@@ -33,6 +33,8 @@ spec:
           image: "{{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.quorum.image.pullPolicy }}
           command:
+            - sh
+            - -c
             - /scripts/init-quorum.sh
           volumeMounts:
             - mountPath: /qdata_all
@@ -47,13 +49,21 @@ spec:
           {{- toYaml .Values.quorum.constellation.securityContext | nindent 12 }}
           image: "{{ .Values.quorum.constellation.image.repository }}:{{ .Values.quorum.constellation.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.quorum.constellation.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - /scripts/start-constellation.sh
+          ports:
+            - containerPort: 9000
+              protocol: TCP
+              name: http
           volumeMounts:
             - mountPath: /qdata_all
               name: config
             - mountPath: /qdata
               name: qdata
-            - mountPath: /constellation
-              name: socket-dir
+            - mountPath: /scripts
+              name: scripts
           resources:
             {{- toYaml .Values.quorum.constellation.resources | nindent 12 }}
         - name: {{ .Chart.Name }}
@@ -62,6 +72,8 @@ spec:
           image: "{{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.quorum.image.pullPolicy }}
           command:
+            - sh
+            - -c
             - /scripts/start-quorum.sh
           env:
             - name: BOOTNODE_SVC
@@ -73,14 +85,12 @@ spec:
               name: qdata
             - mountPath: /scripts
               name: scripts
-            - mountPath: /constellation
-              name: socket-dir
           ports:
             # TODO metrics and health checks
-            - name: geth
+            - name: rpc
               containerPort: 8545
               protocol: TCP
-            - name: other
+            - name: ws
               containerPort: 8546
               protocol: TCP
 {{/*          livenessProbe:*/}}
@@ -106,8 +116,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: socket-dir
-          emptyDir: {}
         - name: config
           persistentVolumeClaim:
             claimName: {{ include "quorum.fullname" . }}-config

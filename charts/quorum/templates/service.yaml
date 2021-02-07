@@ -9,13 +9,17 @@ spec:
   type: {{ .Values.quorum.service.type }}
   ports:
     - port: {{ .Values.quorum.service.gethPort }}
-      targetPort: geth
+      targetPort: rpc
       protocol: TCP
-      name: geth
+      name: rpc
     - port: {{ .Values.quorum.service.otherPort }}
-      targetPort: other
+      targetPort: ws
       protocol: TCP
-      name: other
+      name: ws
+    - port: 9000
+      targetPort: http
+      protocol: TCP
+      name: http
   selector:
     {{- include "quorum.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: quorum

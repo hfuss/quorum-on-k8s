@@ -26,3 +26,7 @@ fi
 
 mkdir -p /qdata/logs
 touch /qdata/logs/dummy.txt
+
+ls /qdata/constellation
+ls /qdata/ethereum
+ls /qdata/logs
