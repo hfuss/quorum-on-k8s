@@ -129,6 +129,9 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
+        {{- if .Values.localPathStorageEnabled }}
+        storageClassName: local-path
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.quorum.storage | quote }}

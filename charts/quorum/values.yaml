@@ -164,3 +164,4 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+localPathStorageEnabled: false
