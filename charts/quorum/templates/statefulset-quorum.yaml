@@ -32,13 +32,6 @@ spec:
         - name: config
           image: "{{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.quorum.image.pullPolicy }}
-          env:
-            - name: HOST_PREFIX
-              value: {{ include "quorum.fullname" . }}
-            - name: NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: .metadata.namespace
           command:
             - sh
             - -c
@@ -88,7 +81,7 @@ spec:
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
-                  fieldPath: .metadata.namespace
+                  fieldPath: metadata.namespace
           volumeMounts:
             - mountPath: /qdata_all
               name: config

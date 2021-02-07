@@ -25,6 +25,10 @@ spec:
               value: {{ .Values.replicaCount | quote }}
             - name: HOST_PREFIX
               value: {{ include "quorum.fullname" . | quote }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           command:
             - sh
             - -c
