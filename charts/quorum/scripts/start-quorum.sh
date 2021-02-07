@@ -14,7 +14,7 @@ until [[ -e "/qdata/constellation/tm.ipc" ]]; do
   i=$k
 done
 
-node /usr/local/src/index.js --bootnode="enode://${bootnode_enode}@${BOOTNODE_SVC}:30301" --raftInit  --networkid 2018
+node /usr/local/src/index.js --bootnode="enode://${bootnode_enode}@${BOOTNODE_SVC}.${NAMESPACE}.svc.cluster.local:30301" --raftInit  --networkid 2018
 
 CHAIN_RECONFIG_MARKER_FILE="/qdata/ethereum/.chain_reconfigure"
 GETH_NODES_DB_DIR="/qdata/ethereum/geth/nodes"
