@@ -7,12 +7,13 @@ metadata:
     app.kubernetes.io/component: quorum
 spec:
   type: {{ .Values.quorum.service.type }}
+  clusterIP: None
   ports:
-    - port: {{ .Values.quorum.service.gethPort }}
+    - port: {{ .Values.quorum.service.rpcPort }}
       targetPort: rpc
       protocol: TCP
       name: rpc
-    - port: {{ .Values.quorum.service.otherPort }}
+    - port: {{ .Values.quorum.service.wsPort }}
       targetPort: ws
       protocol: TCP
       name: ws

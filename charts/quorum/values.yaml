@@ -138,8 +138,8 @@ quorum:
 
   service:
     type: ClusterIP
-    gethPort: 8545
-    otherPort: 8546
+    rpcPort: 8545
+    wsPort: 8546
 
   resources:
     limits:

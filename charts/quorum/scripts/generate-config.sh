@@ -31,7 +31,7 @@ for i in $(seq 1 ${NUM_NODES}); do
   echo "  Node $k id: $enode"
 
   sep=`[[ $i < $NUM_NODES ]] && echo ","`
-  echo '  "enode://'$enode'@'${HOST_PREFIX}-${k}':30303?discport=0&raftport=50400"'$sep >> static-nodes.json
+  echo '  "enode://'$enode'@'${HOST_PREFIX}-${k}.${HOST_PREFIX}.${NAMESPACE}.svc.cluster.local':30303?discport=0&raftport=50400"'$sep >> static-nodes.json
 
 done
 
@@ -98,7 +98,7 @@ for i in $(seq 1 $NUM_NODES)
 do
     k=$((i-1))
     sep=`[[ $i < $NUM_NODES ]] && echo ","`
-    nodelist=${nodelist}'"http://'${HOST_PREFIX}-${k}':9000/"'${sep}
+    nodelist=${nodelist}'"http://'${HOST_PREFIX}-${k}.${HOST_PREFIX}.${NAMESPACE}.svc.cluster.local':9000/"'${sep}
 done
 
 cat <<EOF > tm.conf.template
@@ -117,7 +117,7 @@ do
     qd=${qd_all}/qdata_$k
 
     cat tm.conf.template \
-        | sed s/_NODEIP_/${HOST_PREFIX}-${k}/g  \
+        | sed s/_NODEIP_/${HOST_PREFIX}-${k}.${HOST_PREFIX}.${NAMESPACE}.svc.cluster.local/g  \
         | sed s%_NODELIST_%$nodelist%g \
         > $qd/constellation/tm.conf
 
