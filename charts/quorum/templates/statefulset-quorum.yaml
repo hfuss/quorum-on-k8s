@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "quorum.fullname" . }}
+  labels:
+    {{- include "quorum.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "quorum.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "quorum.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: quorum
+  template:
+    metadata:
+      {{- with .Values.quorum.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "quorum.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: quorum
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "quorum.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.quorum.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: config
+          image: "{{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.quorum.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - /scripts/init-quorum.sh
+          volumeMounts:
+            - mountPath: /qdata_all
+              name: config
+            - mountPath: /qdata
+              name: qdata
+            - mountPath: /scripts
+              name: scripts
+      containers:
+        - name: constellation
+          securityContext:
+            {{- toYaml .Values.quorum.constellation.securityContext | nindent 12 }}
+          image: "{{ .Values.quorum.constellation.image.repository }}:{{ .Values.quorum.constellation.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.quorum.constellation.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - /scripts/start-constellation.sh
+          ports:
+            - containerPort: 9000
+              protocol: TCP
+              name: http
+          volumeMounts:
+            - mountPath: /qdata_all
+              name: config
+            - mountPath: /qdata
+              name: qdata
+            - mountPath: /scripts
+              name: scripts
+          resources:
+            {{- toYaml .Values.quorum.constellation.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.quorum.securityContext | nindent 12 }}
+          image: "{{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.quorum.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - /scripts/start-quorum.sh
+          env:
+            - name: BOOTNODE_SVC
+              value: "{{ include "quorum.fullname" . }}-bootnode"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - mountPath: /qdata_all
+              name: config
+            - mountPath: /qdata
+              name: qdata
+            - mountPath: /scripts
+              name: scripts
+          ports:
+            # TODO metrics and health checks
+            - name: rpc
+              containerPort: 8545
+              protocol: TCP
+            - name: ws
+              containerPort: 8546
+              protocol: TCP
+{{/*          livenessProbe:*/}}
+{{/*            httpGet:*/}}
+{{/*              path: /*/}}
+{{/*              port: http*/}}
+{{/*          readinessProbe:*/}}
+{{/*            httpGet:*/}}
+{{/*              path: /*/}}
+{{/*              port: http*/}}
+          resources:
+            {{- toYaml .Values.quorum.resources | nindent 12 }}
+      {{- with .Values.quorum.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.quorum.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.quorum.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: {{ include "quorum.fullname" . }}-config
+        - name: scripts
+          configMap:
+            name: {{ include "quorum.fullname" . }}-runtime-scripts
+            defaultMode: 0555
+  volumeClaimTemplates:
+    - metadata:
+        name: qdata
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        {{- if .Values.longhornStorageEnabled }}
+        storageClassName: longhorn
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.quorum.storage | quote }}

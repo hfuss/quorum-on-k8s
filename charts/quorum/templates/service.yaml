@@ -4,12 +4,23 @@ metadata:
   name: {{ include "quorum.fullname" . }}
   labels:
     {{- include "quorum.labels" . | nindent 4 }}
+    app.kubernetes.io/component: quorum
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.quorum.service.type }}
+  clusterIP: None
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.quorum.service.rpcPort }}
+      targetPort: rpc
+      protocol: TCP
+      name: rpc
+    - port: {{ .Values.quorum.service.wsPort }}
+      targetPort: ws
+      protocol: TCP
+      name: ws
+    - port: 9000
       targetPort: http
       protocol: TCP
       name: http
   selector:
     {{- include "quorum.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: quorum

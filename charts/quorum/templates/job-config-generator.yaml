@@ -1,0 +1,68 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "quorum.fullname" . }}-config-generator
+  labels:
+    {{ include "quorum.labels" . | nindent 4 }}
+    app.kubernetes.io/component: config-generator
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: keep
+spec:
+  template:
+    metadata:
+      labels:
+        {{ include "quorum.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      securityContext:
+        {{- toYaml .Values.configGenerator.podSecurityContext | nindent 8 }}
+      containers:
+        - name: config-generator
+          image: {{ .Values.configGenerator.image.repository }}:{{ .Values.configGenerator.image.tag }}
+          imagePullPolicy: {{ .Values.configGenerator.image.pullPolicy }}
+          env:
+            - name: NUM_NODES
+              value: {{ .Values.replicaCount | quote }}
+            - name: HOST_PREFIX
+              value: {{ include "quorum.fullname" . | quote }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          command:
+            - sh
+            - -c
+            - '/scripts/generate-config.sh'
+          volumeMounts:
+            - mountPath: /qdata_all
+              name: config
+            - mountPath: /scripts
+              name: scripts
+          resources:
+            {{- toYaml .Values.configGenerator.resources | nindent 12 }}
+      {{- with .Values.configGenerator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.configGenerator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.configGenerator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName:  {{ include "quorum.fullname" . }}-config
+        - name: scripts
+          configMap:
+            name:  {{ include "quorum.fullname" . }}-config-scripts
+            defaultMode: 0555
