@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "quorum.fullname" . }}-test-public-contract"
+  labels:
+    {{- include "quorum.labels" . | nindent 4 }}
+    app.kubernetes.io/component: testing
+  annotations:
+    "helm.sh/hook": post-upgrade
+    helm.sh/hook-weight: "5"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "quorum.labels" . | nindent 8 }}
+        app.kubernetes.io/component: testing
+    spec:
+      {{- include "quorum.podSpec.testPublicContract" . | nindent 6 }}

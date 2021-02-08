@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "quorum.fullname" . }}-test-public-contract"
+  labels:
+    {{- include "quorum.labels" . | nindent 4 }}
+    app.kubernetes.io/component: testing
+  annotations:
+    "helm.sh/hook": test
+    helm.sh/hook-weight: "5"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  {{- include "quorum.podSpec.testPublicContract" . | nindent 2 }}
