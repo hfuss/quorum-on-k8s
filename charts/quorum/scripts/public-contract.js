@@ -1,4 +1,4 @@
-
+// source: https://github.com/ConsenSys/quorum-examples/blob/master/examples/7nodes/samples/simple-storage/public-contract.js
 a = eth.accounts[0]
 web3.eth.defaultAccount = a;
 

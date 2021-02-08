@@ -1,4 +1,4 @@
-.PHONY: clean setup deploy test k8s build
+.PHONY: clean setup deploy test k8s build debug
 
 clean:
 	helm delete -n kaleido quorum || true
