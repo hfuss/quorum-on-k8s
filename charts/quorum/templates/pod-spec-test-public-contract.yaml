@@ -1,0 +1,31 @@
+{{- define "quorum.podSpec.testPublicContract" -}}
+{{- with .Values.imagePullSecrets }}
+imagePullSecrets:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+containers:
+  - name: test
+    image: {{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag }}
+    imagePullPolicy: {{ .Values.quorum.image.pullPolicy | quote }}
+    command:
+      - sh
+      - -c
+      - /scripts/test-public-contract.sh
+    volumeMounts:
+      - mountPath: /qdata
+        name: qdata
+      - mountPath: /scripts
+        name: scripts
+    resources:
+  {{- toYaml .Values.test.resources | nindent 8 }}
+volumes:
+  - name: qdata
+    # assumes theres at least one quorum node always
+    persistentVolumeClaim:
+      claimName: qdata-{{ include "quorum.fullname" . }}-0
+  - name: scripts
+    configMap:
+      name: {{ include "quorum.fullname" . }}-test-scripts
+      defaultMode: 0555
+restartPolicy: Never
+{{- end }}

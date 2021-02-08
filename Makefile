@@ -2,7 +2,7 @@
 
 clean:
 	helm delete -n kaleido quorum || true
-	kubectl delete --ignore-not-found -n kaleido pvc,configmap,job -l 'app.kubernetes.io/name=quorum'
+	kubectl delete --ignore-not-found -n kaleido pvc,configmap,job,pod -l 'app.kubernetes.io/name=quorum'
 
 build:
 	./hack/build-images.sh
@@ -11,7 +11,10 @@ deploy:
 	./hack/deploy.sh
 
 test:
-	./hack/pvc-viewer.sh quorum-config kaleido
+	helm test quorum -n kaleido --logs
+
+debug:
+	helm template --debug /charts/quorum
 
 k8s:
 	./hack/start-minikube.sh
