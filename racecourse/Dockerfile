@@ -7,6 +7,10 @@ WORKDIR /racecourse/client
 RUN npm install \
     && npm run build
 
+WORKDIR /racecourse/contracts
+RUN npm install -g solc \
+    && solcjs --bin --abi Race.sol
+
 WORKDIR /racecourse/server
 
 RUN npm install

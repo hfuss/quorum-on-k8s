@@ -46,4 +46,4 @@ fi
 GETH_ARGS=`cat /qdata/args.txt`
 echo "[*] Starting node with args $GETH_ARGS"
 export PRIVATE_CONFIG=/qdata/constellation/tm.conf
-exec dumb-init --rewrite 15:2 geth $GETH_ARGS --metrics
+exec dumb-init --rewrite 15:2 geth $GETH_ARGS
