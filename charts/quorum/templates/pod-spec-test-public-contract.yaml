@@ -1,8 +1,8 @@
 {{- define "quorum.podSpec.testPublicContract" -}}
 {{- with .Values.imagePullSecrets }}
 imagePullSecrets:
-  {{- toYaml . | nindent 4 }}
-  {{- end }}
+  {{- toYaml . | nindent 2 }}
+{{- end }}
 containers:
   - name: test
     image: {{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag }}
@@ -17,7 +17,7 @@ containers:
       - mountPath: /scripts
         name: scripts
     resources:
-  {{- toYaml .Values.test.resources | nindent 8 }}
+      {{- toYaml .Values.test.resources | nindent 6 }}
 volumes:
   - name: qdata
     # assumes theres at least one quorum node always
