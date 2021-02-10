@@ -14,4 +14,4 @@ if [[ "${OSTYPE}" == "darwin"* ]]; then
   vm=true
 fi
 
-minikube start --vm=${vm} --addons ingress --cpus 6 --memory 6g --cache-images
+minikube start --vm=${vm} --addons ingress --cpus 8 --memory 8g --cache-images

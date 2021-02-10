@@ -2,7 +2,7 @@
 
 set -e
 
-kaleidoPath="${1:-${HOME}/GitHub/kaleido-io/}"
+kaleidoPath="${1:-${HOME}/hfuss/}"
 githubUsername="${2:-hfuss}"
 
 pushd ${kaleidoPath} > /dev/null

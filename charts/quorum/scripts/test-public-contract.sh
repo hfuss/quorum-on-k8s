@@ -13,7 +13,7 @@ until [[ -e "/qdata/ethereum/geth.ipc" ]]; do
   i=$k
 done
 
-echo "Attempting to mine public contract"
+echo "Attempting to mine Race contract"
 # we can't tell from the return code if the script succeeds, but it does print "true"
 geth attach /qdata/ethereum/geth.ipc --exec "loadScript('/scripts/public-contract.js')" | grep true
 echo "Transaction was successful"
