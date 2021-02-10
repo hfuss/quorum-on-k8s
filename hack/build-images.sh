@@ -2,7 +2,7 @@
 
 set -e
 
-kaleidoPath="${1:-${HOME}/GitHub/kaleido-io/}"
+kaleidoPath="${1:-${HOME}/hfuss/}"
 githubUsername="${2:-hfuss}"
 
 pushd ${kaleidoPath} > /dev/null
@@ -13,6 +13,7 @@ pushd ${kaleidoPath} > /dev/null
     [[ -d "quorum" ]] || git clone git@github.com:hfuss/quorum.git
     [[ -d "constellation" ]] || git clone git@github.com:kaleido-io/constellation.git
     [[ -d "istanbul-tools" ]] || git clone git@github.com:getamis/istanbul-tools.git
+    [[ -d "racecourse" ]] || git clone git@github.com/kaleido-io/racecourse.git
 
     pushd quorum-tools > /dev/null
 
@@ -56,3 +57,6 @@ for image in quorum quorum-config-generator; do
   docker build ${image}/ -t ghcr.io/${githubUsername}/${image}
   docker push ghcr.io/${githubUsername}/${image}
 done
+
+docker build -f racecourse/Dockerfile ${kaleidoPath}/racecourse -t ghcr.io/${githubUsername}/racecourse
+docker push ghcr.io/${githubUsername}/racecourse

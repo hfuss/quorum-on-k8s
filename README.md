@@ -35,7 +35,7 @@ However, images are already available for [`ghcr.io/hfuss`](https://github.com/u
 
 ### Development
 
-Right now, development consists of iterating on the Quorum chart:
+Right now, development consists of deploying the Racecourse and Quorum charts:
 
 ```bash
 # deploys the chart
