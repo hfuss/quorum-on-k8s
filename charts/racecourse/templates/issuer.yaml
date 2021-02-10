@@ -1,0 +1,8 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "racecourse.fullname" . }}-selfsigned
+  labels:
+    {{- include "racecourse.labels" . | nindent 4 }}
+spec:
+  selfSigned: {}

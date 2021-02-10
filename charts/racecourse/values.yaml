@@ -39,15 +39,15 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+    cert-manager.io/issuer: '{{ include "racecourse.fullname" . }}-selfsigned'
   hosts:
     - host: racecourse.local
       paths:
         - path: /
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+    - secretName: '{{ include "racecourse.fullname" . }}-tls'
+      hosts:
+        - racecourse.local
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious

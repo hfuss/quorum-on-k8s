@@ -97,14 +97,12 @@ spec:
             - name: ws
               containerPort: 8546
               protocol: TCP
-{{/*          livenessProbe:*/}}
-{{/*            httpGet:*/}}
-{{/*              path: /*/}}
-{{/*              port: http*/}}
-{{/*          readinessProbe:*/}}
-{{/*            httpGet:*/}}
-{{/*              path: /*/}}
-{{/*              port: http*/}}
+          livenessProbe:
+            tcpSocket:
+              port: rpc
+          readinessProbe:
+            tcpSocket:
+              port: rpc
           resources:
             {{- toYaml .Values.quorum.resources | nindent 12 }}
       {{- with .Values.quorum.nodeSelector }}

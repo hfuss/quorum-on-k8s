@@ -21,4 +21,9 @@ debug:
 
 k8s:
 	./hack/start-minikube.sh
+	kubectl create ns cert-manager || true
 	kubectl create ns kaleido || true
+	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0-alpha.2/cert-manager.crds.yaml
+	helm repo add jetstack https://charts.jetstack.io || true
+	helm upgrade --install --skip-crds cert-manager --namespace cert-manager jetstack/cert-manager
+
