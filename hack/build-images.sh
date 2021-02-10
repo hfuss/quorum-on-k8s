@@ -13,7 +13,7 @@ pushd ${kaleidoPath} > /dev/null
     [[ -d "quorum" ]] || git clone git@github.com:hfuss/quorum.git
     [[ -d "constellation" ]] || git clone git@github.com:kaleido-io/constellation.git
     [[ -d "istanbul-tools" ]] || git clone git@github.com:getamis/istanbul-tools.git
-    [[ -d "racecourse" ]] || git clone git@github.com/kaleido-io/racecourse.git
+    [[ -d "racecourse" ]] || git clone git@github.com/hfuss/racecourse.git
 
     pushd quorum-tools > /dev/null
 

@@ -22,9 +22,8 @@ for i in $(seq 1 ${NUM_NODES}); do
   k=$((i-1))
   qd=${qd_all}/qdata_$k
 
-  mkdir -p $qd/{logs,constellation}
+  mkdir -p $qd/constellation
   mkdir -p $qd/ethereum/geth
-  touch $qd/logs/dummy.txt
 
   bootnode -genkey $qd/ethereum/nodekey
   enode=`bootnode -nodekey $qd/ethereum/nodekey -writeaddress | tr -d '[:space:]'`
@@ -56,7 +55,7 @@ do
   # Add the account to the genesis block so it has some Ether at start-up
   sep=`[[ $i < $NUM_NODES ]] && echo ","`
   cat >> alloc.json <<EOF
-  "${account1}": { "balance": "1000000000000000000000000000" }${sep}
+    "${account1}": { "balance": "1000000000000000000000000000" }${sep}
 EOF
 done
 
