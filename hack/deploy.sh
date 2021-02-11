@@ -9,12 +9,12 @@ set -e
 
 # pre-install hooks dont work w/ `upgrade --install`
 if [[ "$release" -eq "1" ]]; then
-  helm install -n kaleido quorum charts/quorum --wait
+  helm install -n kaleido quorum charts/quorum --wait --timeout 240s
 else
-  helm upgrade --atomic --install -n kaleido quorum charts/quorum --wait
+  helm upgrade --atomic --install -n kaleido quorum charts/quorum --wait --timeout 240s
 fi
 
-helm upgrade --atomic --install -n kaleido racecourse charts/racecourse --wait
+helm upgrade --atomic --install -n kaleido racecourse charts/racecourse --wait --timeout 120s
 
 set +e
 cat /etc/hosts | grep racecourse.local

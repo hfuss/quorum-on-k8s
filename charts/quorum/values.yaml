@@ -14,7 +14,7 @@ configGenerator:
 
   image:
     repository: ghcr.io/hfuss/quorum-config-generator
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: latest
 
   resources: {}
@@ -48,15 +48,15 @@ bootnode:
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
      limits:
-       cpu: 100m
-       memory: 32Mi
+       cpu: 250m
+       memory: 64Mi
      requests:
        cpu: 10m
-       memory: 32Mi
+       memory: 64Mi
 
   image:
     repository: ghcr.io/hfuss/quorum
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: latest
   securityContext: { }
     # capabilities:
@@ -79,7 +79,7 @@ quorum:
   storage: 256Mi
   image:
     repository: ghcr.io/hfuss/quorum
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: latest
 
   podAnnotations: {}
@@ -96,15 +96,15 @@ quorum:
   constellation:
     image:
       repository: ghcr.io/hfuss/constellation
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
       tag: latest
     resources:
       limits:
-        cpu: 500m
-        memory: 64Mi
+        cpu: 750m
+        memory: 128Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 128Mi
       # We usually recommend not to specify default resources and to leave this as a conscious
       # choice for the user. This also increases chances charts run on environments with little
       # resources, such as Minikube. If you do want to specify resources, uncomment the following

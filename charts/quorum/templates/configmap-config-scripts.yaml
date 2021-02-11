@@ -11,3 +11,4 @@ metadata:
     helm.sh/hook-delete-policy: keep
 data:
 {{ (.Files.Glob "scripts/generate-config.sh").AsConfig | indent 2 }}
+{{ (.Files.Glob "scripts/add-static-peers.sh").AsConfig | indent 2 }}

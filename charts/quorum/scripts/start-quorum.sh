@@ -46,4 +46,4 @@ fi
 GETH_ARGS=`cat /qdata/args.txt`
 echo "[*] Starting node with args $GETH_ARGS"
 export PRIVATE_CONFIG=/qdata/constellation/tm.conf
-exec dumb-init --rewrite 15:2 geth $GETH_ARGS
+exec dumb-init --rewrite 15:2 geth $GETH_ARGS --dashboard --dashboard.host 8090 --dashboard.addr 0.0.0.0 --metrics --nousb --identity ${HOSTNAME}.${QUORUM_SVC}.${NAMESPACE}.svc.cluster.local --nat=extip:${POD_IP}

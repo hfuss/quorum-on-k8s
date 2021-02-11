@@ -78,10 +78,16 @@ spec:
           env:
             - name: BOOTNODE_SVC
               value: "{{ include "quorum.fullname" . }}-bootnode"
+            - name: QUORUM_SVC
+              value: "{{ include "quorum.fullname" . }}"
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           volumeMounts:
             - mountPath: /qdata_all
               name: config
@@ -97,12 +103,19 @@ spec:
             - name: ws
               containerPort: 8546
               protocol: TCP
+            - name: dashboard
+              containerPort: 8090
+              protocol: TCP
+            - name: raft
+              containerPort: 50400
+              protocol: TCP
+          # smarter probes
           livenessProbe:
             tcpSocket:
               port: rpc
           readinessProbe:
             tcpSocket:
-              port: rpc
+              port: raft
           resources:
             {{- toYaml .Values.quorum.resources | nindent 12 }}
       {{- with .Values.quorum.nodeSelector }}
