@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "quorum.fullname" . }}-add-peers"
+  labels:
+    {{- include "quorum.labels" . | nindent 4 }}
+    app.kubernetes.io/component: testing
+  annotations:
+    "helm.sh/hook": post-install
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  activeDeadlineSeconds: 120
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        {{- include "quorum.labels" . | nindent 8 }}
+        app.kubernetes.io/component: add-peers
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: add-peers
+        image: {{ .Values.quorum.image.repository }}:{{ .Values.quorum.image.tag }}
+        imagePullPolicy: {{ .Values.quorum.image.pullPolicy | quote }}
+        command:
+          - sh
+          - -c
+          - /scripts/add-static-peers.sh
+        env:
+          - name: NUM_NODES
+            value: "{{ .Values.replicaCount }}"
+        volumeMounts:
+          - mountPath: /qdata
+            name: qdata
+          - mountPath: /scripts
+            name: scripts
+        resources:
+          {{- toYaml .Values.test.resources | nindent 10 }}
+      volumes:
+        - name: qdata
+          # assumes theres at least one quorum node always
+          persistentVolumeClaim:
+            claimName: qdata-{{ include "quorum.fullname" . }}-0
+        - name: scripts
+          configMap:
+            name: {{ include "quorum.fullname" . }}-config-scripts
+            defaultMode: 0555
+      restartPolicy: Never

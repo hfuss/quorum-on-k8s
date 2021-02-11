@@ -10,14 +10,15 @@ build:
 
 deploy:
 	./hack/deploy.sh
+	./hack/get-nodes-info.sh
 
 test:
 	helm test quorum -n kaleido --logs
 	helm test racecourse -n kaleido --logs
 
 debug:
-	helm template --debug /charts/quorum
-	helm template --debug /charts/racecourse
+	helm template --debug charts/quorum
+	helm template --debug charts/racecourse
 
 cluster:
 	./hack/start-minikube.sh
