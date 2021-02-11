@@ -1,4 +1,4 @@
-.PHONY: clean deploy test k8s build debug cert-manager cluster
+.PHONY: clean deploy test k8s build debug cert-manager cluster unit-test
 
 clean:
 	helm delete -n kaleido racecourse || true
@@ -15,6 +15,9 @@ deploy:
 test:
 	helm test quorum -n kaleido --logs
 	helm test racecourse -n kaleido --logs
+
+unit-test:
+	go test ./.../
 
 debug:
 	helm template --debug charts/quorum
